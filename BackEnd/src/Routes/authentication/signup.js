@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
 // ===== POST route =====
 router.post('/', rateLimitMiddleware, upload.single('profilePicture'), validateSignup, async (req, res) => {
   try {
-      const { email, password, school, experience, userName } = req.body;
+      const { email, password, school, experience, userName , country} = req.body;
 
       // Check if email exists
       if (await User.findOne({ email })) {
@@ -48,6 +48,8 @@ router.post('/', rateLimitMiddleware, upload.single('profilePicture'), validateS
         );
       }
 
+      const currentDate = new Date();
+
       // Save new user
       const newUser = await User.create({
         email,
@@ -55,7 +57,9 @@ router.post('/', rateLimitMiddleware, upload.single('profilePicture'), validateS
         profilePicture: imageUrl,
         school,
         experience,
-        userName
+        userName,
+        joinedDate: currentDate,
+        country
       });
 
       // Generate JWT

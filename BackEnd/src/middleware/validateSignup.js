@@ -14,6 +14,31 @@ const isValidUniversity = async (schoolName) => {
   return data.some(u => u.name.toLowerCase() === schoolName.toLowerCase());
 };
 
+const isValidCountry = async (countryName) => {
+  try {
+    const res = await fetch(
+      `https://restcountries.com/v3.1/name/${encodeURIComponent(countryName)}?fields=name`
+    );
+
+    if (res.status === 404) {
+      return false; // Country not found
+    }
+
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status}`);
+    }
+
+    const data = await res.json();
+    return data.some(
+      c => c.name?.common?.toLowerCase() === countryName.toLowerCase()
+    );
+  } catch (err) {
+    console.error("Error validating country:", err.message);
+    return false;
+  }
+};
+
+
 const validateSignup = [
   body('email')
     .isEmail().withMessage('Invalid email format')
@@ -36,6 +61,14 @@ const validateSignup = [
     }),
   body('experience')
     .isInt({ min: 0, max: 80 }).withMessage('Experience must be an integer between 0 and 80'),
+  body('country')
+    .trim()
+    .notEmpty().withMessage('Country is required')
+    .custom(async (value) => {
+      const valid = await isValidCountry(value);
+      if (!valid) throw new Error('Country not recognized. Please enter a valid country name.');
+      return true;
+    }),
 
   (req, res, next) => {
     const errors = validationResult(req);
