@@ -11,7 +11,7 @@ apiInstance.setApiKey(
 );
 
 export default async function sendVerificationEmail(toEmail, userName, token, userId) {
-  const verificationLink = `${process.env.FRONTEND_URL}/signup/verify-email?token=${token}&userId=${userId}`;
+  const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${token}&userId=${userId}`;
 
   const sendSmtpEmail = {
     sender: { email: 'samifatima975@gmail.com', name: 'CollabNest' },
