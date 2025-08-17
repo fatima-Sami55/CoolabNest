@@ -1,13 +1,14 @@
 import { body, validationResult } from 'express-validator';
 import fetch from 'node-fetch';
-import localUniversities from "../data/fallBackSchools.js"
+import localUniversities from "../data/fallBackSchools.js";
+import { regex } from '../helpers/regex.js';  
 
 const isValidUniversity = async (schoolName) => {
-  // First, check local list
   if (localUniversities.includes(schoolName)) return true;
 
-  // Else hit Hipolabs API
-  const res = await fetch(`http://universities.hipolabs.com/search?name=${encodeURIComponent(schoolName)}&country=Pakistan`);
+  const res = await fetch(
+    `http://universities.hipolabs.com/search?name=${encodeURIComponent(schoolName)}&country=Pakistan`
+  );
   if (!res.ok) return false;
 
   const data = await res.json();
@@ -20,13 +21,8 @@ const isValidCountry = async (countryName) => {
       `https://restcountries.com/v3.1/name/${encodeURIComponent(countryName)}?fields=name`
     );
 
-    if (res.status === 404) {
-      return false; // Country not found
-    }
-
-    if (!res.ok) {
-      throw new Error(`API error: ${res.status}`);
-    }
+    if (res.status === 404) return false;
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
 
     const data = await res.json();
     return data.some(
@@ -38,18 +34,24 @@ const isValidCountry = async (countryName) => {
   }
 };
 
-
 const validateSignup = [
   body('email')
-    .isEmail().withMessage('Invalid email format')
+    .matches(regex.email).withMessage('Invalid email format')
     .normalizeEmail(),
   body('password')
-    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
-    .matches(/\d/).withMessage('Password must contain at least one number')
-    .matches(/[A-Z]/).withMessage('Password must contain at least one uppercase letter'),
+    .matches(regex.password).withMessage('Password must be at least 8 characters, contain one number and one letter'),
   body('userName')
     .isLength({ min: 3 }).withMessage('Username must be at least 3 characters')
     .matches(/^[a-zA-Z0-9_]+$/).withMessage('Username can only contain letters, numbers, and underscores'),
+  body('linkedin')
+    .optional()
+    .matches(regex.linkedin).withMessage('Invalid LinkedIn URL'),
+  body('github')
+    .optional()
+    .matches(regex.github).withMessage('Invalid GitHub URL'),
+  body('profilePicture')
+    .optional()
+    .matches(regex.profilePicture).withMessage('Profile picture must be a valid image URL (.png, .jpg, etc.)'),
   body('school')
     .trim()
     .notEmpty().withMessage('School name is required')

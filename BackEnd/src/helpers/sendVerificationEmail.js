@@ -1,5 +1,5 @@
-import brevo from '@getbrevo/brevo';
 import dotenv from 'dotenv';
+import brevo from '@getbrevo/brevo';
 import htmlContent from '../data/verificationMailTemplate.js';
 
 dotenv.config();
@@ -14,7 +14,7 @@ export default async function sendVerificationEmail(toEmail, userName, token, us
   const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${token}&userId=${userId}`;
 
   const sendSmtpEmail = {
-    sender: { email: 'samifatima975@gmail.com', name: 'CollabNest' },
+    sender: { email: process.env.BREVO_SENDER_EMAIL, name: 'CollabNest' },
     to: [{ email: toEmail, name: userName }],
     subject: 'Verify Your Email - CollabNest',
     htmlContent: htmlContent(verificationLink, userName)

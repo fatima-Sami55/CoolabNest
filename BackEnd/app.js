@@ -5,6 +5,7 @@ import signupRoute from './src/Routes/authentication/signup.js';
 import loginRoute from './src/Routes/authentication/login.js';
 import logoutRoute from './src/Routes/authentication/logout.js';
 import verifyMailRoute from './src/Routes/authentication/verifyEmail.js';
+import editProfileRoute from './src/Routes/userProfile/editProfile.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use('/signup', signupRoute);
 app.use('/login', loginRoute);
 app.use('/logout', logoutRoute);
 app.use('/verify-email', verifyMailRoute);
+app.use('/edit-profile', editProfileRoute);
 
 
 app.listen(PORT, () => {

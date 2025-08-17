@@ -9,7 +9,11 @@ const userSchema = new mongoose.Schema({
   userName: { type: String, default: null },
   isVerified: { type: Boolean, default: false },
   joinedDate: { type: Date, default: null },
-  country: { type: String, default: null }
+  country: { type: String, default: null },
+  bio: { type: String, default: null },
+  skills: { type: String, default: null },
+  github: { type: String, default: null },
+  linkedin: { type: String, default: null }
 });
 
 const User = mongoose.model('User', userSchema);

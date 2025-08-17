@@ -46,6 +46,8 @@ router.post('/', rateLimitMiddleware, upload.single('profilePicture'), validateS
           req.file.buffer,
           'profile_pictures_CollabNest'
         );
+      } else {
+        imageUrl = 'https://res.cloudinary.com/dvm6ebpga/image/upload/v1755452660/profile_pictures_CollabNest/icon-7797704_640_sthahm.png'; 
       }
 
       const currentDate = new Date();
